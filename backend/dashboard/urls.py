@@ -3,7 +3,6 @@ from rest_framework.routers import DefaultRouter
 
 from . import views
 
-
 router = DefaultRouter()
 router.register("tenants", views.TenantViewSet)
 router.register("users", views.AdminUserViewSet)
@@ -20,5 +19,11 @@ urlpatterns = [
     path("health/", views.health, name="health"),
     path("admin-dashboard/", views.admin_dashboard, name="admin-dashboard"),
     path("dashboard/summary/", views.dashboard_summary, name="dashboard-summary"),
+
+    # Auth
     path("auth/google-login/", views.google_login, name="google-login"),
+    path("auth/login/", views.email_login, name="email-login"),
+    path("auth/logout/", views.logout_view, name="logout"),
+    path("auth/me/", views.current_user, name="current-user"),
+    path("auth/google/", views.google_oauth_url, name="google-oauth-url"),
 ]

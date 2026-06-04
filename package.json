@@ -1,0 +1,16 @@
+{
+  "name": "adminflow",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names \"django,next\" --prefix-colors \"green,blue\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run start",
+    "dev:frontend": "cd frontend && npm run dev",
+    "install:all": "cd frontend && npm install && cd ../backend && pip install -r requirements.txt",
+    "setup": "cd backend && python manage.py migrate --noinput && python manage.py shell -c \"from dashboard.services import ensure_seed_data; ensure_seed_data(); print('Seed data ready.')\"",
+    "setup:superuser": "cd backend && python manage.py createsuperuser"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

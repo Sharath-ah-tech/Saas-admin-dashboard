@@ -15,6 +15,8 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { AuthGuard } from "./AuthGuard";
+import { UserMenu } from "./UserMenu";
 
 const navItems = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
@@ -32,39 +34,48 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <main className="shell">
-      <aside className="sidebar" aria-label="Primary navigation">
-        <Link className="brand" href="/">
-          <div className="brandMark">
-            <Gauge size={20} aria-hidden />
+    <AuthGuard>
+      <main className="shell">
+        <aside className="sidebar" aria-label="Primary navigation">
+          <Link className="brand" href="/">
+            <div className="brandMark">
+              <Gauge size={20} aria-hidden />
+            </div>
+            <div>
+              <strong>AdminFlow</strong>
+              <span>SaaS control center</span>
+            </div>
+          </Link>
+
+          <nav className="navLinks">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive =
+                item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+              return (
+                <Link className={isActive ? "active" : ""} href={item.href} key={item.href}>
+                  <Icon size={18} aria-hidden />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="gatewayCard">
+            <span>Payment sandbox</span>
+            <strong>Stripe + Razorpay</strong>
+            <small>Dummy payments persist through the DRF API.</small>
           </div>
-          <div>
-            <strong>AdminFlow</strong>
-            <span>SaaS control center</span>
+        </aside>
+
+        <section className="workspace">
+          {/* Top bar with user menu */}
+          <div className="shellTopbar">
+            <UserMenu />
           </div>
-        </Link>
-
-        <nav className="navLinks">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-
-            return (
-              <Link className={isActive ? "active" : ""} href={item.href} key={item.href}>
-                <Icon size={18} aria-hidden />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="gatewayCard">
-          <span>Payment sandbox</span>
-          <strong>Stripe + Razorpay</strong>
-          <small>Dummy payments persist through the DRF API.</small>
-        </div>
-      </aside>
-      <section className="workspace">{children}</section>
-    </main>
+          {children}
+        </section>
+      </main>
+    </AuthGuard>
   );
 }
